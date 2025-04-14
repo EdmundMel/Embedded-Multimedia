@@ -1,10 +1,5 @@
 pipeline {
     agent any
-
-    environment {
-        CONTAINER_NAME = "temp-ubuntu-container"
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -12,15 +7,10 @@ pipeline {
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Print ReadME and Hello World') {
             steps {
                 script {
-                    sh """
-                    docker run --name \$CONTAINER_NAME --rm \
-                        -v "\$(pwd)":/workspace \
-                        -w /workspace \
-                        ubuntu bash -c "apt-get update && apt-get install -y cat && cat README.md || echo 'README.md not found'; echo 'Hello, World!'"
-                    """
+                    sh "cat README.md; echo 'Hello, World!'"
                 }
             }
         }
