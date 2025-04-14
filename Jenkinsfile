@@ -1,41 +1,37 @@
 pipeline {
-    agent {
-        docker {
-            image 'ubuntu:latest'
-            label 'docker'  // Optional: depends on your agent setup
-        }
+    agent any
+
+    environment {
+        CONTAINER_NAME = "temp-ubuntu-container"
     }
 
     stages {
-        stage('Prepare') {
+        stage('Checkout') {
             steps {
-                sh 'apt-get update && apt-get install -y cat'
+                checkout scm
             }
         }
 
-        stage('Print README.md') {
+        stage('Run Docker Container') {
             steps {
                 script {
-                    if (fileExists('README.md')) {
-                        sh 'cat README.md'
-                    } else {
-                        echo 'README.md not found'
-                    }
+                    sh """
+                    docker run --name \$CONTAINER_NAME --rm \
+                        -v "\$(pwd)":/workspace \
+                        -w /workspace \
+                        ubuntu bash -c "apt-get update && apt-get install -y cat && cat README.md || echo 'README.md not found'; echo 'Hello, World!'"
+                    """
                 }
-            }
-        }
-
-        stage('Say Hello') {
-            steps {
-                echo 'Hello, World!'
             }
         }
     }
 
     post {
         always {
-            echo 'Cleaning up workspace...'
-            cleanWs()
+            node {
+                echo 'Cleaning up workspace...'
+                cleanWs()
+            }
         }
     }
 }
