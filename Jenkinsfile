@@ -2,18 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Install Dependencies') {
-            steps {
-                script {
-                    sh '''
-                        echo "Updating packages and installing build essentials..."
-                        sudo apt-get update
-                        sudo apt-get install -y build-essential
-                    '''
-                }
-            }
-        }
-
         stage('Print README and Hello World') {
             steps {
                 script {
