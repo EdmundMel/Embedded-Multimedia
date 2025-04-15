@@ -1,22 +1,39 @@
 pipeline {
     agent any
+
     stages {
-        stage('Print ReadME and Hello World') {
+        stage('Install Dependencies') {
             steps {
                 script {
-                    sh "cat README.md; echo 'Hello, World!'"
+                    sh '''
+                        echo "Updating packages and installing build essentials..."
+                        sudo apt-get update
+                        sudo apt-get install -y build-essential
+                    '''
                 }
             }
         }
+
+        stage('Print README and Hello World') {
+            steps {
+                script {
+                    sh "cat README.md || echo 'No README.md found'"
+                    echo 'Hello, World!'
+                }
+            }
+        }
+
         stage('Build and Run C Program') {
             steps {
                 script {
-                    // Assume main.c exists in the repo
-                    sh 'gcc main.c -o main'
-                    sh './main'
+                    sh '''
+                        gcc main.c -o main
+                        ./main
+                    '''
                 }
             }
         }
+
         stage('SonarQube Analysis') {
             steps {
                 script {
@@ -31,8 +48,8 @@ pipeline {
 
     post {
         always {
-                echo 'Cleaning up workspace...'
-                cleanWs()
+            echo 'Cleaning up workspace...'
+            cleanWs()
         }
     }
 }
