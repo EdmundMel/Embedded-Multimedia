@@ -8,6 +8,15 @@ pipeline {
                 }
             }
         }
+        stage('Build and Run C Program') {
+            steps {
+                script {
+                    // Assume main.c exists in the repo
+                    sh 'gcc main.c -o main'
+                    sh './main'
+                }
+            }
+        }
         stage('SonarQube Analysis') {
             steps {
                 script {
