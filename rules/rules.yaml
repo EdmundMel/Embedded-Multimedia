@@ -1,0 +1,59 @@
+# This file defines the rules for a home security system.
+rules:
+  # Arm the system when the user triggers the arming event
+  - if:
+      state: DISARMED
+      event: ARMING
+    then:
+      next_state: ARMED
+  # Disarm the system when the user triggers the disarming event while in ARMED state.
+  - if:
+      state: ARMED
+      event: DISARMING
+    then:
+      next_state: DISARMED
+  # Disarm the system when the user triggers the disarming event while in ALARM state.
+  - if:
+      state: ALARM
+      event: DISARMING
+    then:
+      next_state: DISARMED
+  # Allow motion detection in living room during holidays between 4pm and 6pm.
+  - if:
+      state: HOLIDAY
+      event:
+        type: MOTION
+        id: motion_sensor_living_room
+      time_range:
+        start: "16:00"
+        end: "18:00"
+    then:
+      actions: [ ]
+  # Take a photo when the front door is opened while the system is armed.
+  - if:
+      state: ARMED
+      event: DOOR_OPEN
+    then:
+      actions:
+        - type: TAKE_PHOTO
+          id: "camera_front_door"
+  # Trigger the siren and send a notification 60 seconds after a door is opened while the system is armed. (Do not trigger if the system is disarmed in the meantime.)
+  - if:
+      state: ARMED
+      event: DOOR_OPEN
+      elapsed_gt: 60
+    then:
+      actions:
+        - type: TRIGGER_SIREN
+          id: "siren_1"
+        - type: SEND_NOTIFICATION
+          id: "discord"
+      next_state: ALARM
+  # Send a notification when motion is detected while the system is armed.
+  - if:
+      state: ARMED
+      event: MOTION
+    then:
+      actions:
+        - type: SEND_NOTIFICATION
+          id: "telegram"

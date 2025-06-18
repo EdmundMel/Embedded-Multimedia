@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "if": {
+            "type": "object",
+            "properties": {
+              "state": {
+                "type": "string",
+                "enum": [
+                  "DISARMED",
+                  "ARMED",
+                  "HOLIDAY",
+                  "ALARM"
+                ]
+              },
+              "event": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "ARMING",
+                          "DISARMING",
+                          "MOTION",
+                          "DOOR_OPEN",
+                          "WINDOW_OPEN",
+                          "GLASS_BREAK"
+                        ]
+                      },
+                      "id": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "ARMING",
+                      "DISARMING",
+                      "MOTION",
+                      "DOOR_OPEN",
+                      "WINDOW_OPEN",
+                      "GLASS_BREAK"
+                    ]
+                  }
+                ]
+              },
+              "elapsed_gt": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "time_range": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "string",
+                    "pattern": "^\\d{2}:\\d{2}$"
+                  },
+                  "end": {
+                    "type": "string",
+                    "pattern": "^\\d{2}:\\d{2}$"
+                  }
+                },
+                "required": [
+                  "start",
+                  "end"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "actions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "TRIGGER_SIREN",
+                        "SEND_NOTIFICATION",
+                        "TAKE_PHOTO"
+                      ]
+                    },
+                    "id": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "next_state": {
+                "type": "string",
+                "enum": [
+                  "DISARMED",
+                  "ARMED",
+                  "HOLIDAY",
+                  "ALARM"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "if",
+          "then"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "rules"
+  ],
+  "additionalProperties": false
+}
