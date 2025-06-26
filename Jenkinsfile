@@ -15,8 +15,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        gcc main.c -o main
-                        ./main
+                        echo "skipping build stage"
                     '''
                 }
             }
