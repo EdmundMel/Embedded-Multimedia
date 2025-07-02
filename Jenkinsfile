@@ -1,40 +1,30 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'gcc:13'   // or another image with cmake, libpq-dev, etc.
+            args '-u root'   // optional: run container as root
+        }
+    }
 
     stages {
-        stage('Install Dependencies') {
+        stage('Prepare') {
             steps {
-                script {
-                    sh '''
-                        echo "Updating package lists and installing dependencies..."
-                        apt-get update
-                        apt-get install -y \
-                            build-essential \
-                            cmake \
-                            libpq-dev \
-                            git \
-                            wget \
-                            libssl-dev \
-                            pkg-config
-                    '''
-                }
+                sh '''
+                    apt-get update
+                    apt-get install -y cmake libpq-dev git
+                '''
             }
         }
 
         stage('Build and Run C++ Program') {
             steps {
-                script {
-                    sh '''
-                        echo "Configuring and building the project..."
-                        mkdir -p build
-                        cd build
-                        cmake ..
-                        make -j$(nproc)
-
-                        echo "Running the program..."
-                        ./home-alarm-core
-                    '''
-                }
+                sh '''
+                    mkdir -p build
+                    cd build
+                    cmake ..
+                    make -j$(nproc)
+                    ./home-alarm-core
+                '''
             }
         }
 
