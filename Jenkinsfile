@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'kitware/cmake:ci-debian12-aarch64-2025-03-31'
+            image 'danger89/cmake:bookworm-cppcheck-2.16.0'
         }
     }
 
@@ -9,8 +9,8 @@ pipeline {
         stage('Prepare') {
             steps {
                 sh '''
-                    sudo apt-get update
-                    sudo apt-get install -y libpq-dev git
+                    apt-get update
+                    apt-get install -y libpq-dev git
                 '''
             }
         }
