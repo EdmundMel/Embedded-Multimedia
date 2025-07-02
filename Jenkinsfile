@@ -7,8 +7,8 @@ pipeline {
                 script {
                     sh '''
                         echo "Updating package lists and installing dependencies..."
-                        sudo apt-get update
-                        sudo apt-get install -y \
+                        apt-get update
+                        apt-get install -y \
                             build-essential \
                             cmake \
                             libpq-dev \
