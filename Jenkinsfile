@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'gcc:latest'
+            image 'kitware/cmake:ci-debian12-aarch64-2025-03-31'
             args '-u root'
         }
     }
@@ -10,8 +10,9 @@ pipeline {
         stage('Prepare') {
             steps {
                 sh '''
+                    sudo apt purge --auto-remove cmake
                     apt-get update
-                    apt-get install -y cmake libpq-dev git
+                    apt-get install -y libpq-dev git
                 '''
             }
         }

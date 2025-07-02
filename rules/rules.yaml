@@ -28,7 +28,7 @@ rules:
         start: "16:00"
         end: "18:00"
     then:
-      actions: [ ]
+      actions: []
   # Take a photo when the front door is opened while the system is armed.
   - if:
       state: ARMED
