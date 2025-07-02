@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'gcc:13'   // or another image with cmake, libpq-dev, etc.
-            args '-u root'   // optional: run container as root
+            image 'gcc:latest'
+            args '-u root'
         }
     }
 
