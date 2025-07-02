@@ -2,7 +2,6 @@ pipeline {
     agent {
         docker {
             image 'kitware/cmake:ci-debian12-aarch64-2025-03-31'
-            args '-u root'
         }
     }
 
