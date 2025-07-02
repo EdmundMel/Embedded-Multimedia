@@ -10,7 +10,6 @@ pipeline {
         stage('Prepare') {
             steps {
                 sh '''
-                    sudo apt purge --auto-remove cmake
                     apt-get update
                     apt-get install -y libpq-dev git
                 '''
