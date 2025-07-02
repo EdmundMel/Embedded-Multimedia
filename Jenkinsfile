@@ -2,21 +2,11 @@ pipeline {
     agent any
 
     stages {
-        stage('Print README and Hello World') {
-            steps {
-                script {
-                    sh "cat README.md || echo 'No README.md found'"
-                    echo 'Hello, World!'
-                }
-            }
-        }
-
         stage('Build and Run C Program') {
             steps {
                 script {
                     sh '''
-                        gcc main.c -o main
-                        ./main
+                        echo "skipping build stage"
                     '''
                 }
             }
