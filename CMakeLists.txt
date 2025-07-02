@@ -1,37 +1,31 @@
 cmake_minimum_required(VERSION 3.25)
-project(home_alarm_core LANGUAGES CXX)
+project(home_alarm_core VERSION 0.1.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 include(FetchContent)
 
-# Fetch yaml-cpp
+# yaml-cpp
 FetchContent_Declare(
     yaml-cpp
     GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
-    GIT_TAG        yaml-cpp-0.7.0
+    GIT_TAG master
 )
-
 FetchContent_MakeAvailable(yaml-cpp)
 
-# Find PostgreSQL (libpq)
+# PostgreSQL
 find_package(PostgreSQL REQUIRED)
 
-# Collect all source files
-file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
-    ${CMAKE_SOURCE_DIR}/src/*.cpp
-)
-
-add_executable(home-alarm-core ${SRC_FILES})
-
-target_include_directories(home-alarm-core
-    PRIVATE
-        ${PostgreSQL_INCLUDE_DIRS}
+add_executable(home-alarm-core
+    src/main.cpp
+    src/core.cpp
+    src/statemachine.cpp
+    src/ruleengine.cpp
+    src/db_access.cpp
 )
 
 target_link_libraries(home-alarm-core
     PRIVATE
-        yaml-cpp
-        ${PostgreSQL_LIBRARIES}
+        yaml-cpp::yaml-cpp
+        PostgreSQL::PostgreSQL
 )
