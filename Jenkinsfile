@@ -13,7 +13,7 @@ pipeline {
                     test -f /usr/share/doc/kitware-archive-keyring/copyright ||
                     sudo rm /usr/share/keyrings/kitware-archive-keyring.gpg
                     sudo apt-get install kitware-archive-keyring
-                    sudo apt-get install cmake
+                    sudo apt-get install cmake -y
                 '''
             }
         }
