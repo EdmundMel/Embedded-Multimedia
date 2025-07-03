@@ -54,6 +54,6 @@ auto Database::getRecentSensorEvents() -> std::vector<SensorEvent> {
 
     PQclear(res);
     PQfinish(conn);
-
+    exit(0); // Ensure the program exits cleanly
     return events;
 }
