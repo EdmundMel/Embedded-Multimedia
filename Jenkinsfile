@@ -45,7 +45,7 @@ pipeline {
         stage('Start PostgreSQL') {
             steps {
                 sh '''
-                    docker run -d \
+                    sudo docker run -d \
                         --name $POSTGRES_CONTAINER_NAME \
                         -e POSTGRES_USER=$POSTGRES_USER \
                         -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
@@ -56,7 +56,7 @@ pipeline {
                     # Wait until Postgres is accepting connections
                     echo "Waiting for PostgreSQL to start..."
                     for i in {1..30}; do
-                      docker exec $POSTGRES_CONTAINER_NAME pg_isready -U $POSTGRES_USER && break
+                      sudo docker exec $POSTGRES_CONTAINER_NAME pg_isready -U $POSTGRES_USER && break
                       sleep 1
                     done
                 '''
@@ -89,7 +89,7 @@ pipeline {
         always {
             echo 'Stopping and removing PostgreSQL container if it exists...'
             sh '''
-                docker rm -f $POSTGRES_CONTAINER_NAME || true
+                sudo docker rm -f $POSTGRES_CONTAINER_NAME || true
             '''
             echo 'Cleaning up workspace...'
             cleanWs()
