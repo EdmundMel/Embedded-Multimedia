@@ -1,16 +1,12 @@
 pipeline {
-    agent {
-        docker {
-            image 'danger89/cmake:bookworm-cppcheck-2.16.0'
-        }
-    }
+    agent any
 
     stages {
         stage('Prepare') {
             steps {
                 sh '''
-                    apt-get update
-                    apt-get install -y libpq-dev git
+                    sudo apt-get update
+                    sudo apt-get install -y libpq-dev git
                 '''
             }
         }
