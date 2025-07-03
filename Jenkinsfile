@@ -37,9 +37,7 @@ pipeline {
         stage('Build and Run C++ Program') {
             steps {
                 sh '''
-                    mkdir -p build
-                    cd build
-                    cmake ..
+                    cmake
                     make -j$(nproc)
                     ./home-alarm-core
                 '''
