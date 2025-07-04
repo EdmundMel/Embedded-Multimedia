@@ -59,7 +59,6 @@ pipeline {
                     cd web
                     mkdir -p data
                     # Ensure the data directory is writable by the current user
-                    sudo chown $(id -u):$(id -g) .
                     sudo docker compose up -d
                 '''
             }
