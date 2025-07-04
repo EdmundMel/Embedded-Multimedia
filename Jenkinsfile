@@ -57,6 +57,8 @@ pipeline {
             steps {
                 sh '''
                     cd web
+                    mkdir -p data
+                    # Ensure the data directory exists
                     sudo docker compose up -d
                 '''
             }
