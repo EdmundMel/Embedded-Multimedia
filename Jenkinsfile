@@ -53,6 +53,15 @@ pipeline {
             }
         }
 
+        stage('Start Grafana') {
+            steps {
+                sh '''
+                    cd web
+                    sudo docker compose up -d
+                '''
+            }
+        }
+
         stage('Build and Run C++ Program') {
             steps {
                 sh '''
@@ -80,6 +89,7 @@ pipeline {
             echo 'Stopping and removing PostgreSQL container if it exists...'
             sh '''
             sudo docker compose -f database/docker-compose.yml down || true
+            sudo docker compose -f web/docker-compose.yml down || true
             '''
             echo 'Cleaning up workspace...'
             cleanWs()
