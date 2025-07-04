@@ -1,7 +1,7 @@
 services:
   grafana-home:
     image: grafana/grafana-enterprise
-    container_name: grafana
+    container_name: grafana-home
     restart: unless-stopped
     volumes:
       - ./data:/var/lib/grafana
