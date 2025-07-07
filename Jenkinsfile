@@ -69,7 +69,21 @@ pipeline {
                 sh '''
                     cmake .
                     make -j$(nproc)
-                    ./home-alarm-core
+
+                    echo "Starting home-alarm-core..."
+                    ./home-alarm-core &
+                    PID=$!
+
+                    sleep 60
+
+                    if ! kill -0 $PID 2>/dev/null; then
+                        echo "home-alarm-core exited early. Failing pipeline."
+                        exit 1
+                    fi
+
+                    echo "home-alarm-core is still running. Terminating..."
+                    kill $PID
+                    wait $PID || true
                 '''
             }
         }
