@@ -67,11 +67,11 @@ pipeline {
         stage('Install SonarQube Scanner') {
             steps {
                 sh '''
-                    curl --create-dirs -sSLo $HOME/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux-aarch64.zip
-                    unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
+                    curl --create-dirs -sSLo $HOME/workspace/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux-aarch64.zip
+                    unzip -o $HOME/workspace/.sonar/sonar-scanner.zip -d $HOME/workspace/.sonar/
 
-                    curl --create-dirs -sSLo $HOME/.sonar/build-wrapper-linux-aarch64.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-aarch64.zip
-                    unzip -o $HOME/.sonar/build-wrapper-linux-aarch64.zip -d $HOME/.sonar/
+                    curl --create-dirs -sSLo $HOME/workspace/.sonar/build-wrapper-linux-aarch64.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-aarch64.zip
+                    unzip -o $HOME/workspace/.sonar/build-wrapper-linux-aarch64.zip -d $HOME/workspace/.sonar/
                 '''
             }
         }
@@ -79,7 +79,7 @@ pipeline {
         stage('Build and Run C++ Program') {
             steps {
                 sh '''
-                    export PATH=$HOME/.sonar/build-wrapper-linux-aarch64:$PATH
+                    export PATH=$HOME/workspace/.sonar/build-wrapper-linux-aarch64:$PATH
                     build-wrapper-linux-aarch64 --out-dir bw-output cmake .
                     make -j$(nproc)
 
@@ -106,7 +106,7 @@ pipeline {
                 script {
                     sh '''
                     export SONAR_SCANNER_VERSION=7.0.2.4839
-                    export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux-aarch64
+                    export SONAR_SCANNER_HOME=$HOME/workspace/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux-aarch64
                     export PATH=$SONAR_SCANNER_HOME/bin:$PATH
                     export SONAR_SCANNER_OPTS="-server"
 
