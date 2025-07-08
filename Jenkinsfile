@@ -90,8 +90,8 @@ pipeline {
             steps {
                 sh '''
                     export PATH=$HOME/workspace/.sonar/build-wrapper-linux-aarch64:$PATH
-                    build-wrapper-linux-aarch64 --out-dir bw-output cmake .
-                    make -j$(nproc)
+                    cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .
+                    build-wrapper-linux-aarch64 --out-dir bw-output make -j$(nproc)
 
                     echo "Starting home-alarm-core..."
                     ./home-alarm-core &
