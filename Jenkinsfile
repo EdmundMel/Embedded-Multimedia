@@ -67,14 +67,17 @@ pipeline {
         stage('Build and Run C++ Program') {
             steps {
                 sh '''
-                    cmake .
+                    curl --create-dirs -sSLo $HOME/.sonar/build-wrapper-linux-aarch64.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-aarch64.zip
+                    unzip -o $HOME/.sonar/build-wrapper-linux-aarch64.zip -d $HOME/.sonar/
+                    export PATH=$HOME/.sonar/build-wrapper-linux-aarch64:$PATH
+                    build-wrapper-linux-aarch64 --out-dir bw-output cmake .
                     make -j$(nproc)
 
                     echo "Starting home-alarm-core..."
                     ./home-alarm-core &
                     PID=$!
 
-                    sleep 60
+                    sleep 600
 
                     if ! kill -0 $PID 2>/dev/null; then
                         echo "home-alarm-core exited early. Failing pipeline."
@@ -91,10 +94,12 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    def scannerHome = tool 'sonar'
-                    withSonarQubeEnv() {
-                        sh "${scannerHome}/bin/sonar-scanner"
-                    }
+                    sonar-scanner \
+                    -Dsonar.organization=edmundmel \
+                    -Dsonar.projectKey=EdmundMel_Embedded-Multimedia \
+                    -Dsonar.sources=. \
+                    -Dsonar.cfamily.compile-commands=bw-output/compile_commands.json \
+                    -Dsonar.host.url=https://sonarcloud.io
                 }
             }
         }
