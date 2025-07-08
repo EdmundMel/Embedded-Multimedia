@@ -77,7 +77,7 @@ pipeline {
                     ./home-alarm-core &
                     PID=$!
 
-                    sleep 600
+                    sleep 6
 
                     if ! kill -0 $PID 2>/dev/null; then
                         echo "home-alarm-core exited early. Failing pipeline."
