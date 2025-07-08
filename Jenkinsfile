@@ -94,12 +94,14 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
+                    sh """
                     sonar-scanner \
                     -Dsonar.organization=edmundmel \
                     -Dsonar.projectKey=EdmundMel_Embedded-Multimedia \
                     -Dsonar.sources=. \
                     -Dsonar.cfamily.compile-commands=bw-output/compile_commands.json \
                     -Dsonar.host.url=https://sonarcloud.io
+                    """
                 }
             }
         }
