@@ -65,26 +65,26 @@ pipeline {
         }
 
         stage('Install SonarQube Scanner') {
-        environment {
-            SONAR_SCANNER_VERSION = '7.0.2.4839'
-            SONAR_DIR = "${HOME}/workspace/.sonar"
-        }
-            steps {
-                sh '''
-                    set -e
-
-                    mkdir -p $SONAR_DIR
-
-                    # Download and unzip SonarQube scanner
-                    curl -fSL -o $SONAR_DIR/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux-aarch64.zip
-                    unzip -o $SONAR_DIR/sonar-scanner.zip -d $SONAR_DIR
-
-                    # Download and unzip build-wrapper
-                    curl -fSL -o $SONAR_DIR/build-wrapper.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-aarch64.zip
-                    unzip -o $SONAR_DIR/build-wrapper.zip -d $SONAR_DIR
-                '''
+            environment {
+                SONAR_SCANNER_VERSION = '7.0.2.4839'
+                SONAR_DIR = "${HOME}/workspace/.sonar"
             }
-        }
+                steps {
+                    sh '''
+                        set -e
+
+                        mkdir -p $SONAR_DIR
+
+                        # Download and unzip SonarQube scanner
+                        curl -fSL -o $SONAR_DIR/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux-aarch64.zip
+                        unzip -o $SONAR_DIR/sonar-scanner.zip -d $SONAR_DIR
+
+                        # Download and unzip build-wrapper
+                        curl -fSL -o $SONAR_DIR/build-wrapper.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-aarch64.zip
+                        unzip -o $SONAR_DIR/build-wrapper.zip -d $SONAR_DIR
+                    '''
+                }
+            }
 
         stage('Build and Run C++ Program') {
             steps {
@@ -112,20 +112,23 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
+            environment {
+                SONAR_SCANNER_VERSION = '7.0.2.4839'
+                SONAR_SCANNER_HOME = "${HOME}/workspace/.sonar/sonar-scanner-${SONAR_SCANNER_VERSION}-linux-aarch64"
+            }
             steps {
-                script {
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                     sh '''
-                    export SONAR_SCANNER_VERSION=7.0.2.4839
-                    export SONAR_SCANNER_HOME=$HOME/workspace/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux-aarch64
-                    export PATH=$SONAR_SCANNER_HOME/bin:$PATH
-                    export SONAR_SCANNER_OPTS="-server"
+                        export PATH=$SONAR_SCANNER_HOME/bin:$HOME/workspace/.sonar/build-wrapper-linux-aarch64:$PATH
+                        export SONAR_SCANNER_OPTS="-server"
 
-                    sonar-scanner \
-                    -Dsonar.organization=edmundmel \
-                    -Dsonar.projectKey=EdmundMel_Embedded-Multimedia \
-                    -Dsonar.sources=. \
-                    -Dsonar.cfamily.compile-commands=bw-output/compile_commands.json \
-                    -Dsonar.host.url=https://sonarcloud.io
+                        sonar-scanner \
+                        -Dsonar.organization=edmundmel \
+                        -Dsonar.projectKey=EdmundMel_Embedded-Multimedia \
+                        -Dsonar.sources=. \
+                        -Dsonar.cfamily.compile-commands=bw-output/compile_commands.json \
+                        -Dsonar.host.url=https://sonarcloud.io \
+                        -Dsonar.login=$SONAR_TOKEN
                     '''
                 }
             }
