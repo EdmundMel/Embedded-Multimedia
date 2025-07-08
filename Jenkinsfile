@@ -123,12 +123,8 @@ pipeline {
                         export SONAR_SCANNER_OPTS="-server"
 
                         sonar-scanner \
-                        -Dsonar.organization=edmundmel \
-                        -Dsonar.projectKey=EdmundMel_Embedded-Multimedia \
-                        -Dsonar.sources=. \
                         -Dsonar.inclusions=**/*.c,**/*.cpp,**/*.h \
                         -Dsonar.cfamily.compile-commands=bw-output/compile_commands.json \
-                        -Dsonar.host.url=https://sonarcloud.io \
                         -Dsonar.token=$SONAR_TOKEN
                     '''
                 }
