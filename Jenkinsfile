@@ -6,6 +6,11 @@ pipeline {
             name: 'INSTALL_DEPENDENCIES',
             defaultValue: false,
             description: 'Install DEPENDENCIES in Prepare stage?'
+        ),
+        booleanParam(
+            name: 'START_HOME_ALARM_CORE',
+            defaultValue: false,
+            description: 'Start Home Alarm Core service?'
         )
     }
 
@@ -39,6 +44,9 @@ pipeline {
         }
 
         stage('Start PostgreSQL') {
+            when {
+                expression { return params.START_HOME_ALARM_CORE }
+            }
             steps {
                 sh '''
                     cd database
@@ -54,6 +62,9 @@ pipeline {
         }
 
         stage('Start Grafana') {
+            when {
+                expression { return params.START_HOME_ALARM_CORE }
+            }
             steps {
                 sh '''
                     cd web
@@ -86,18 +97,26 @@ pipeline {
                 }
             }
 
-        stage('Build and Run C++ Program') {
+        stage('Build C++ Program') {
             steps {
                 sh '''
                     export PATH=$HOME/workspace/.sonar/build-wrapper-linux-aarch64:$PATH
                     cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .
                     build-wrapper-linux-aarch64 --out-dir bw-output make -j$(nproc)
+                '''
+            }
+        }
 
-                    echo "Starting home-alarm-core..."
+        stage('Run C++ Program') {
+            when {
+                expression { return params.START_HOME_ALARM_CORE }
+            }
+            steps {
+                sh '''
                     ./home-alarm-core &
                     PID=$!
 
-                    sleep 6
+                    sleep 600
 
                     if ! kill -0 $PID 2>/dev/null; then
                         echo "home-alarm-core exited early. Failing pipeline."
