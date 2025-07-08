@@ -64,12 +64,26 @@ pipeline {
             }
         }
 
-        stage('Build and Run C++ Program') {
+        stage('Install SonarQube Scanner') {
             steps {
                 sh '''
+                    export SONAR_SCANNER_VERSION=7.0.2.4839
+                    export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux-aarch64
+                    curl --create-dirs -sSLo $HOME/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux-aarch64.zip
+                    unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
+                    export PATH=$SONAR_SCANNER_HOME/bin:$PATH
+                    export SONAR_SCANNER_OPTS="-server"
+
                     curl --create-dirs -sSLo $HOME/.sonar/build-wrapper-linux-aarch64.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-aarch64.zip
                     unzip -o $HOME/.sonar/build-wrapper-linux-aarch64.zip -d $HOME/.sonar/
                     export PATH=$HOME/.sonar/build-wrapper-linux-aarch64:$PATH
+                '''
+            }
+        }
+
+        stage('Build and Run C++ Program') {
+            steps {
+                sh '''
                     build-wrapper-linux-aarch64 --out-dir bw-output cmake .
                     make -j$(nproc)
 
