@@ -126,9 +126,10 @@ pipeline {
                         -Dsonar.organization=edmundmel \
                         -Dsonar.projectKey=EdmundMel_Embedded-Multimedia \
                         -Dsonar.sources=. \
+                        -Dsonar.inclusions=**/*.c,**/*.cpp,**/*.h \
                         -Dsonar.cfamily.compile-commands=bw-output/compile_commands.json \
                         -Dsonar.host.url=https://sonarcloud.io \
-                        -Dsonar.login=$SONAR_TOKEN
+                        -Dsonar.token=$SONAR_TOKEN
                     '''
                 }
             }
