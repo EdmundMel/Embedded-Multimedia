@@ -65,13 +65,23 @@ pipeline {
         }
 
         stage('Install SonarQube Scanner') {
+        environment {
+            SONAR_SCANNER_VERSION = '7.0.2.4839'
+            SONAR_DIR = "${HOME}/workspace/.sonar"
+        }
             steps {
                 sh '''
-                    curl --create-dirs -sSLo $HOME/workspace/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux-aarch64.zip
-                    unzip -o $HOME/workspace/.sonar/sonar-scanner.zip -d $HOME/workspace/.sonar/
+                    set -e
 
-                    curl --create-dirs -sSLo $HOME/workspace/.sonar/build-wrapper-linux-aarch64.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-aarch64.zip
-                    unzip -o $HOME/workspace/.sonar/build-wrapper-linux-aarch64.zip -d $HOME/workspace/.sonar/
+                    mkdir -p $SONAR_DIR
+
+                    # Download and unzip SonarQube scanner
+                    curl -fSL -o $SONAR_DIR/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux-aarch64.zip
+                    unzip -o $SONAR_DIR/sonar-scanner.zip -d $SONAR_DIR
+
+                    # Download and unzip build-wrapper
+                    curl -fSL -o $SONAR_DIR/build-wrapper.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-aarch64.zip
+                    unzip -o $SONAR_DIR/build-wrapper.zip -d $SONAR_DIR
                 '''
             }
         }
@@ -130,7 +140,7 @@ pipeline {
             sudo docker compose -f web/docker-compose.yml down || true
             '''
             echo 'Cleaning up workspace...'
-            // cleanWs()
+            cleanWs()
         }
     }
 }
