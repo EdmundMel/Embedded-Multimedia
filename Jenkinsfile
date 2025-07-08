@@ -130,7 +130,7 @@ pipeline {
             sudo docker compose -f web/docker-compose.yml down || true
             '''
             echo 'Cleaning up workspace...'
-            cleanWs()
+            // cleanWs()
         }
     }
 }
