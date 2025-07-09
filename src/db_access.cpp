@@ -55,6 +55,7 @@ auto Database::getRecentSensorEvents() -> std::vector<SensorEvent> {
 
         events.push_back(SensorEvent{
             .sensor_id = std::move(sensor_id),
+            .type      = "SEND_NOTIFICATION",  // Type is not stored in the database, set a default value
             .value     = std::move(value),
             .timestamp = tp
         });
