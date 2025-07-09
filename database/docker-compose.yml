@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: "postgres:latest"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=sensordb
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_USER=dbuser
+    container_name: postgres
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/db.sql
+
+volumes:
+  postgres_data:
