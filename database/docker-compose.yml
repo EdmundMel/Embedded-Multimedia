@@ -10,5 +10,5 @@ services:
     container_name: postgres
     restart: always
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
+      # - ./postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/db.sql
