@@ -25,7 +25,7 @@ auto Database::getRecentSensorEvents() -> std::vector<SensorEvent> {
 
     // Query the last 10 sensor events
     PGresult* res = PQexec(conn,
-        "SELECT sensor_id, type, value, timestamp "
+        "SELECT sensor_id, value, timestamp "
         "FROM sensor_events "
         "ORDER BY timestamp DESC "
         "LIMIT 10");
@@ -41,7 +41,6 @@ auto Database::getRecentSensorEvents() -> std::vector<SensorEvent> {
     for (int i = 0; i < n; ++i) {
         // Extract columns
         std::string sensor_id    = PQgetvalue(res, i, 0);
-        std::string type         = PQgetvalue(res, i, 1);
         std::string value        = PQgetvalue(res, i, 2);
         std::string timestampStr = PQgetvalue(res, i, 3);
 
@@ -56,7 +55,6 @@ auto Database::getRecentSensorEvents() -> std::vector<SensorEvent> {
 
         events.push_back(SensorEvent{
             .sensor_id = std::move(sensor_id),
-            .type      = std::move(type),
             .value     = std::move(value),
             .timestamp = tp
         });

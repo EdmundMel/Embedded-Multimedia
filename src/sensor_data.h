@@ -4,7 +4,6 @@
 #include <chrono>
 struct SensorEvent {
     std::string sensor_id;
-    std::string type;
     std::string value;           // ← new member
     std::chrono::system_clock::time_point timestamp;
 };
