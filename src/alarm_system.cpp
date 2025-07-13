@@ -67,7 +67,7 @@ void AlarmSystem::handleEvent(const SensorEvent &ev) {
                 std::cout << "Checking pin\n";   // TODO: implement PIN verification later
             } else if (ev.sensor_id == "window" || ev.sensor_id == "motion") {
                 current_state_ = State::ALARM;
-                std::cout << "ALARM\n";          // TODO: trigger siren / notification
+                std::cout << "ALARM!\n";          // TODO: trigger siren / notification
             }
             return;
         }
