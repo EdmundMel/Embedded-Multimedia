@@ -9,8 +9,6 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    //MainWindow w;
-    //w.show();
     QTimer *timer = new QTimer(&a);
     QList<ISensor*> sensors;
 
@@ -44,7 +42,7 @@ int main(int argc, char *argv[])
         }
     });
 
-    timer->start(10000);
+    timer->start(1000); // measure every 1 second
 
     return a.exec();
 }

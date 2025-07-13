@@ -15,12 +15,11 @@ FetchContent_MakeAvailable(yaml-cpp)
 
 # PostgreSQL
 find_package(PostgreSQL REQUIRED)
+find_package(Threads REQUIRED)
 
 add_executable(home-alarm-core
     src/main.cpp
-    src/core.cpp
-    src/statemachine.cpp
-    src/ruleengine.cpp
+    src/alarm_system.cpp
     src/db_access.cpp
 )
 

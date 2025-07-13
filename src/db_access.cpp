@@ -41,8 +41,8 @@ auto Database::getRecentSensorEvents() -> std::vector<SensorEvent> {
     for (int i = 0; i < n; ++i) {
         // Extract columns
         std::string sensor_id    = PQgetvalue(res, i, 0);
-        std::string value        = PQgetvalue(res, i, 2);
-        std::string timestampStr = PQgetvalue(res, i, 3);
+        std::string value        = PQgetvalue(res, i, 1);
+        std::string timestampStr = PQgetvalue(res, i, 2);
 
         // Parse ISO‑style timestamp into a time_point
         std::tm tm = {};
@@ -55,7 +55,6 @@ auto Database::getRecentSensorEvents() -> std::vector<SensorEvent> {
 
         events.push_back(SensorEvent{
             .sensor_id = std::move(sensor_id),
-            .type      = "SEND_NOTIFICATION",  // Type is not stored in the database, set a default value
             .value     = std::move(value),
             .timestamp = tp
         });
