@@ -17,7 +17,7 @@ Core::Core() : ruleEngine("rules/rules.yaml") {
 void Core::run() {
     while (true) {
         tick();
-        std::this_thread::sleep_for(std::chrono::seconds(10));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
 
