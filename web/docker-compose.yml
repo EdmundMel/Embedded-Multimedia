@@ -13,7 +13,6 @@ services:
     volumes:
       - ./datasource/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
       - ./dashboards:/etc/grafana/provisioning/dashboards
-      - ./grafana-data:/var/lib/grafana
     networks:
       - database_sensornet
 
