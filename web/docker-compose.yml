@@ -14,8 +14,8 @@ services:
       - ./dashboards:/etc/grafana/provisioning/dashboards
       - ./grafana-data:/var/lib/grafana
     networks:
-      - sensornet
+      - postgres-sensornet
 
 networks:
-  sensornet:
+  postgres-sensornet:
     external: true
