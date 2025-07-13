@@ -13,4 +13,5 @@ services:
       - postgres
     volumes:
       - ./grafana-provisioning/datasource/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./grafana-provisioning/dashboards:/etc/grafana/provisioning/dashboards
       - ./grafana-data:/var/lib/grafana
