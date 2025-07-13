@@ -19,5 +19,5 @@ services:
       - sensornet
 
 networks:
-  external:
-    name: sensornet
+  sensornet:
+    external: true
