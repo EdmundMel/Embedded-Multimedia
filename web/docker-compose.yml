@@ -9,8 +9,6 @@ services:
       - GF_DATABASE_PASSWORD=secret
     ports:
       - "3000:3000"
-    depends_on:
-      - postgres
     volumes:
       - ./datasource/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
       - ./dashboards:/etc/grafana/provisioning/dashboards
