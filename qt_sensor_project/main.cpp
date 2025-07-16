@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 
     // add sensors here - name can be any, gpio must be configured
     //sensors.append(new GPIOSensor("motion", 26));
-    sensors.append(new GPIOSensor("window", 16)); // watch out: pin must be pull up: pinctrl set 16 ip pu
+    sensors.append(new GPIOSensor("door", 16)); // watch out: pin must be pull up: pinctrl set 16 ip pu
 
     // controls for checking if the sensor has triggered
     const int samplesBurst = 10;

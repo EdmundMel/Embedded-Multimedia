@@ -2,6 +2,7 @@
 #define PIN_CHECKER_H
 
 #include <QSerialPort>
+#include <QTimer>
 #include <QObject>
 
 class PinChecker : public QObject
@@ -23,11 +24,12 @@ private:
     void checkPin();
     QSerialPort *serial;
     QString currentInput;
-    int     attempts                = 0;
-    const int maxAttempts           = 3;
+    int     attempts = 0;
+    const int maxAttempts = 3;
     QString pythonPath;
     QString scriptPath;
-
+    QTimer* timeoutTimer;
+    const int timeout = 10000;
 };
 
 

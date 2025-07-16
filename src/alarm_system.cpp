@@ -171,7 +171,7 @@ void AlarmSystem::handleEvent(const SensorEvent &ev) {
         case State::ARMED: {
             if (ev.value != "1") return;   // We only transition on active/high values
 
-            if (ev.sensor_id == "window") {
+            if (ev.sensor_id == "door") {
                 active_rec_pid_ = startContinuousRecording();
                 executeAudioAsync("/home/pi/Embedded-Multimedia/pin.wav");
                 current_state_ = State::CHECK;
@@ -193,7 +193,7 @@ void AlarmSystem::handleEvent(const SensorEvent &ev) {
                     sendVideoFile();
                     executeAudioAsync("/home/pi/Embedded-Multimedia/alarm.wav");
                 }
-            } else if (ev.sensor_id == "door" || ev.sensor_id == "motion") {
+            } else if (ev.sensor_id == "window" || ev.sensor_id == "motion") {
                 recordClipAsync(10s);
                 current_state_ = State::ALARM;
                 std::cout << "ALARM!\n";

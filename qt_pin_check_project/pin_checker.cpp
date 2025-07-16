@@ -7,10 +7,10 @@
 PinChecker::PinChecker(QObject* parent)
     : QObject(parent),
       serial(new QSerialPort(this)),
-      attempts(0)
+      attempts(0),
+      timeoutTimer(new QTimer(this))
 {
     currentInput = "";
-
     serial->setPortName("/dev/ttyAMA0");
     serial->setBaudRate(QSerialPort::Baud9600);
     serial->setDataBits(QSerialPort::Data8);
@@ -22,6 +22,14 @@ PinChecker::PinChecker(QObject* parent)
     scriptPath = "/home/pi/Embedded-Multimedia/qt_pin_check_project/show_on_display.py";
 
     QProcess::execute(pythonPath, QStringList() << scriptPath << "----");
+
+    timeoutTimer->setSingleShot(true);
+    timeoutTimer->setInterval(timeout); // e.g., 60000 ms
+    connect(timeoutTimer, &QTimer::timeout, this, [this]() {
+        emit finished(13);
+    });
+    timeoutTimer->start();
+
 
     if (serial->open(QIODevice::ReadOnly)) {
         connect(serial, &QSerialPort::readyRead, this, &PinChecker::handleKeypad);
@@ -37,9 +45,7 @@ PinChecker::~PinChecker() {
 
 void PinChecker::handleKeypad() {
     QByteArray data = serial->readAll();
-    //QString hexString;
     for (const auto &ch : data) {
-        //QChar c(ch);
         switch (ch) {
             case 0xE1:
                 currentInput += "1";
@@ -89,7 +95,7 @@ void PinChecker::handleKeypad() {
             currentInput.clear();
         }
     }
-}
+ }
 
 void PinChecker::checkPin()
 {
@@ -104,6 +110,7 @@ void PinChecker::checkPin()
 
     if (currentInput == correctPin) {
         QProcess::execute(pythonPath, QStringList() << scriptPath << "pass");
+        timeoutTimer->stop();
         emit finished(12);
         return;
     }
@@ -112,6 +119,7 @@ void PinChecker::checkPin()
     QProcess::execute(pythonPath, QStringList() << scriptPath << "fail");
 
     if (attempts >= maxAttempts) {
+        timeoutTimer->stop();
         emit finished(13);
     }
 }
