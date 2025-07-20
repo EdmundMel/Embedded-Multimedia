@@ -91,7 +91,18 @@ pipeline {
                     cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .
                     build-wrapper-linux-aarch64 --out-dir bw-output make -j$(nproc)
                     ctest --output-on-failure
+                    
+                    # Run tests again to ensure coverage data is generated
                     ./db_access_test
+                    
+                    # Generate gcov files in the source directory for SonarQube
+                    cd CMakeFiles/db_access.dir/src
+                    gcov -b -c db_access.cpp.gcno
+                    mv *.gcov ../../../src/
+                    cd ../../..
+                    
+                    # List the generated gcov files for debugging
+                    ls -la src/*.gcov || echo "No gcov files found"
                 '''
             }
         }
@@ -144,7 +155,7 @@ pipeline {
 
                         sonar-scanner \
                         -Dsonar.cfamily.compile-commands=bw-output/compile_commands.json \
-                        -Dsonar.cfamily.gcov.reportsPath=. \
+                        -Dsonar.cfamily.gcov.reportsPath=src \
                         -Dsonar.go.coverage.reportPaths=home_alarm_bot_coverage.out \
                         -Dsonar.token=$SONAR_TOKEN
                     '''
