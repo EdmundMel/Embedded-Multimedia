@@ -144,6 +144,7 @@ pipeline {
                         export SONAR_SCANNER_OPTS="-server"
 
                         sonar-scanner \
+                        -Dsonar.cfamily.compile-commands=bw-output/compile_commands.json \
                         -Dsonar.token=$SONAR_TOKEN
                     '''
                 }
