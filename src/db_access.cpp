@@ -51,7 +51,7 @@ auto Database::getRecentSensorEvents() -> std::vector<SensorEvent> {
         if (ss.fail()) {
             // handle parse error if needed
         }
-        auto tp = std::chrono::system_clock::from_time_t(std::chrono(&tm));
+        auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
 
         events.push_back(SensorEvent{
             .sensor_id = std::move(sensor_id),
