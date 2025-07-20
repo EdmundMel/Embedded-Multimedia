@@ -120,6 +120,18 @@ pipeline {
             }
         }
 
+        stage('Run Tests') {
+            steps {
+                sh '''
+                    cd telegram_bot
+                    go test ./... -coverprofile=coverage.out -covermode=set
+                    cp coverage.out ../go-telegram-coverage.out
+                    cd ..
+                '''
+            }
+        }
+
+
         stage('SonarQube Analysis') {
             environment {
                 SONAR_SCANNER_VERSION = '7.0.2.4839'
@@ -132,8 +144,6 @@ pipeline {
                         export SONAR_SCANNER_OPTS="-server"
 
                         sonar-scanner \
-                        -Dsonar.inclusions=**/*.c,**/*.cpp,**/*.h \
-                        -Dsonar.cfamily.compile-commands=bw-output/compile_commands.json \
                         -Dsonar.token=$SONAR_TOKEN
                     '''
                 }
