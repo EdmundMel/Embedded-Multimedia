@@ -5,26 +5,32 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include(FetchContent)
 
-# yaml-cpp
 FetchContent_Declare(
-    yaml-cpp
-    GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
-    GIT_TAG master
+  cpp_httplib
+  GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git
+  GIT_TAG        v0.23.1  # lock to a specific version
+  SOURCE_SUBDIR  ""       # no subdir; top-level has httplib.h
 )
-FetchContent_MakeAvailable(yaml-cpp)
+FetchContent_MakeAvailable(cpp_httplib)
+
+# Define interface target
+add_library(httplib INTERFACE)
+target_include_directories(httplib
+  INTERFACE
+    ${cpp_httplib_SOURCE_DIR}
+)
 
 # PostgreSQL
 find_package(PostgreSQL REQUIRED)
 find_package(Threads REQUIRED)
 
+# --- Main executable ---
 add_executable(home-alarm-core
-    src/main.cpp
-    src/alarm_system.cpp
-    src/db_access.cpp
+    src/*.cpp
 )
 
 target_link_libraries(home-alarm-core
     PRIVATE
-        yaml-cpp::yaml-cpp
-        PostgreSQL::PostgreSQL
+      PostgreSQL::PostgreSQL
+      httplib
 )

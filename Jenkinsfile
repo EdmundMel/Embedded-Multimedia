@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     parameters {
-        booleanParam(name: 'INSTALL_DEPENDENCIES', defaultValue: false, description: 'Install DEPENDENCIES in Prepare stage?')
+        booleanParam(name: 'INSTALL_DEPENDENCIES', defaultValue: true, description: 'Install DEPENDENCIES in Prepare stage?')
         booleanParam(name: 'START_HOME_ALARM_CORE', defaultValue: false, description: 'Start Home Alarm Core service?')
     }
 

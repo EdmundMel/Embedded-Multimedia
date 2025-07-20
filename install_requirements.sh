@@ -24,12 +24,6 @@ rm "$GO_TAR"
 echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.profile
 export PATH=$PATH:/usr/local/go/bin
 
-# --- Install httplib.h (cpp-httplib) ---
-HTTPLIB_VERSION="0.23.1"
-mkdir -p include/cpp-httplib
-curl -L "https://raw.githubusercontent.com/yhirose/cpp-httplib/v${HTTPLIB_VERSION}/httplib.h" \
-  -o include/cpp-httplib/httplib.h
-
 # --- Setup Python venv and install lgpio ---
 python3 -m venv venv
 . venv/bin/activate
