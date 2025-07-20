@@ -123,9 +123,9 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                cd telegram_bot
+                cd home-alarm-bot
                 go test ./... -coverprofile=coverage.out -covermode=set
-                cp coverage.out ../telegram_bot_coverage.out
+                cp coverage.out ../home_alarm_bot_coverage.out
                 cd ..
                 '''
             }
