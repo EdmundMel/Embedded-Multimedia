@@ -5,7 +5,7 @@ set -e
 sudo apt update && sudo apt upgrade -y
 
 # Install required system packages
-sudo apt install -y libgpiod-dev python3-venv python3-pip curl git libpq-dev git software-properties-common lsb-release docker.io
+sudo apt install -y libgpiod-dev python3-venv python3-pip curl git libpq-dev git software-properties-common lsb-release
 
 # --- Install Docker ---
 # sudo apt remove -y docker docker-engine docker.io containerd runc || true
