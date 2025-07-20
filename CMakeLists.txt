@@ -24,10 +24,23 @@ find_package(PostgreSQL REQUIRED)
 find_package(Threads REQUIRED)
 
 # C++ unit tests
+# Library for DB access
+add_library(db_access STATIC src/db_access.cpp)
+
+target_link_libraries(db_access PRIVATE
+    PostgreSQL::PostgreSQL
+    Threads::Threads
+)
+
+# Test executable
 add_executable(db_access_test src/db_access_test.cpp)
-target_link_libraries(db_access_test PRIVATE db_access pq)  # pq for libpq
-enable_testing()
-add_test(NAME DBAccessTest COMMAND db_access_test)
+target_link_libraries(db_access_test PRIVATE
+    db_access
+    gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(db_access_test)
 
 # Main executable
 add_executable(home-alarm-core
