@@ -32,7 +32,7 @@ curl -L "https://raw.githubusercontent.com/yhirose/cpp-httplib/v${HTTPLIB_VERSIO
 
 # --- Setup Python venv and install lgpio ---
 python3 -m venv venv
-source venv/bin/activate
+. venv/bin/activate
 pip install --upgrade pip
 pip install lgpio
 
