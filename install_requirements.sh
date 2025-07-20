@@ -8,11 +8,11 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install -y libgpiod-dev python3-venv python3-pip curl git libpq-dev git software-properties-common lsb-release
 
 # --- Install Docker ---
-# sudo apt remove -y docker docker-engine docker.io containerd runc || true
-# curl -fsSL https://get.docker.com -o get-docker.sh
-# sh get-docker.sh
-# rm get-docker.sh
-# sudo usermod -aG docker "$USER"
+sudo apt remove -y docker docker-engine docker.io containerd runc || true
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+rm get-docker.sh
+sudo usermod -aG docker "$USER"
 
 # --- Install latest Go ---
 GO_VERSION=$(curl -s "https://go.dev/VERSION?m=text" | head -n1 | tr -d '\r')
