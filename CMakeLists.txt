@@ -21,11 +21,12 @@ add_executable(home-alarm-core
     src/main.cpp
     src/alarm_system.cpp
     src/db_access.cpp
-    
+
 )
 
 target_link_libraries(home-alarm-core
     PRIVATE
       PostgreSQL::PostgreSQL
       httplib
+      cpp-httplib
 )
