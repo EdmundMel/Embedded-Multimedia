@@ -134,6 +134,17 @@ cd ..
 # kill $(cat telegram-bot.pid)
 ```
 
+#### 🔧 GPIO Configuration (Raspberry Pi)
+
+```bash
+# Pin 16 als Input mit Pull-up konfigurieren --> Muss bei jedem neustart des Systems ausgeführt werden
+pinctrl set 16 ip pu
+
+# GPIO Status prüfen
+pinctrl get 16
+
+```
+
 ## 🧪 Entwicklung & Testing
 
 ### C++ Development
@@ -200,21 +211,6 @@ cat backup.sql | sudo docker exec -i postgres psql -U dbuser -d sensordb
 - **Admin:** admin/admin
 - **Data Directory:** `web/data`
 - **Container Name:** `grafana`
-
-## 🔧 GPIO Configuration (Raspberry Pi)
-
-```bash
-# Pin 16 als Input mit Pull-up konfigurieren
-pinctrl set 16 ip pu
-
-# GPIO Status prüfen
-pinctrl get 16
-
-# Weitere GPIO Operationen
-pinctrl set <pin> op    # Output
-pinctrl set <pin> ip    # Input
-pinctrl set <pin> ip pd # Input with pull-down
-```
 
 ## 🔍 Troubleshooting
 
