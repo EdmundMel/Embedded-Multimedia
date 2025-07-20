@@ -1,39 +1,66 @@
 #include "db_access.h"
+#include "sensor_data.h"
+
+#include <chrono>
+#include <vector>
+#include <string>
+#include <stdexcept>
+#include <sstream>
+#include <iomanip>
+
 #include <libpq-fe.h>
 
 auto Database::getRecentSensorEvents() -> std::vector<SensorEvent> {
     std::vector<SensorEvent> events;
 
-    if (conn_->status() != CONNECTION_OK) {
-        throw std::runtime_error("Connection to database failed: " + std::string(conn_->errorMessage()));
+    // Connection string: adjust user, password, dbname as needed
+    const char* conninfo = "host=localhost port=5432 dbname=sensordb user=dbuser password=secret";
+
+    PGconn* conn = PQconnectdb(conninfo);
+    if (PQstatus(conn) != CONNECTION_OK) {
+        std::string err = PQerrorMessage(conn);
+        PQfinish(conn);
+        throw std::runtime_error("Connection to database failed: " + err);
     }
 
-    auto res = conn_->exec(
+    // Query the last 10 sensor events
+    PGresult* res = PQexec(conn,
         "SELECT sensor_id, value, timestamp "
         "FROM sensor_events "
         "ORDER BY timestamp DESC "
-        "LIMIT 10"
-    );
+        "LIMIT 10");
 
-    if (res->status() != PGRES_TUPLES_OK) {
-        throw std::runtime_error("Query failed: " + std::string(conn_->errorMessage()));
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        std::string err = PQerrorMessage(conn);
+        PQclear(res);
+        PQfinish(conn);
+        throw std::runtime_error("Query failed: " + err);
     }
 
-    int n = res->ntuples();
+    int n = PQntuples(res);
     for (int i = 0; i < n; ++i) {
-        std::string sensor_id = res->value(i, 0);
-        std::string value     = res->value(i, 1);
-        std::string timestampStr = res->value(i, 2);
+        // Extract columns
+        std::string sensor_id    = PQgetvalue(res, i, 0);
+        std::string value        = PQgetvalue(res, i, 1);
+        std::string timestampStr = PQgetvalue(res, i, 2);
 
+        // Parse ISO‑style timestamp into a time_point
         std::tm tm = {};
         std::istringstream ss(timestampStr);
         ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
+        if (ss.fail()) {
+            // handle parse error if needed
+        }
         auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
 
-        events.push_back(SensorEvent{std::move(sensor_id), std::move(value), tp});
+        events.push_back(SensorEvent{
+            .sensor_id = std::move(sensor_id),
+            .value     = std::move(value),
+            .timestamp = tp
+        });
     }
 
-    res->clear();
-    conn_->finish();
+    PQclear(res);
+    PQfinish(conn);
     return events;
 }

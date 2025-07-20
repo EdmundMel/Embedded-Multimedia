@@ -1,14 +1,14 @@
 #include "alarm_system.h"
-#include "db_access.h"
+#include "db_access.h"      // <--- keep your existing DB layer *unchanged*
 
 #define CPPHTTPLIB_FORM_DATA
-#include "httplib.h"
+#include "httplib.h"        // cpp-httplib single‑header library
 
 #include <iostream>
 #include <chrono>
 #include <thread>
-#include <cstdlib>
-#include <sys/wait.h>
+#include <cstdlib>     // std::system
+#include <sys/wait.h>  // WEXITSTATUS, WIFEXITED
 #include <thread>
 #include <signal.h>
 #include <sys/types.h>
@@ -30,13 +30,13 @@ inline void executeAudioAsync(const std::string& filepath)
 
         if (rc != 0)
             std::cerr << "[WARN] command failed (" << rc << "): " << cmd << '\n';
-    }).detach();
+    }).detach();   // fire-and-forget
 }
 
 namespace 
 {   
     void sendVideoFile(); 
-    constexpr char kVideoPath[] = "/home/pi/Embedded-Multimedia/sounds/alarm.mp4";
+    constexpr char kVideoPath[] = "/home/pi/Embedded-Multimedia/alarm.mp4";
 
     // ---------- continuous recording ----------
     pid_t startContinuousRecording()
@@ -173,7 +173,7 @@ void AlarmSystem::handleEvent(const SensorEvent &ev) {
 
             if (ev.sensor_id == "door") {
                 active_rec_pid_ = startContinuousRecording();
-                executeAudioAsync("/home/pi/Embedded-Multimedia/sounds/pin.wav");
+                executeAudioAsync("/home/pi/Embedded-Multimedia/pin.wav");
                 current_state_ = State::CHECK;
                 std::cout << "Checking pin\n";
 
@@ -185,20 +185,20 @@ void AlarmSystem::handleEvent(const SensorEvent &ev) {
                     current_state_ = State::DISARMED;
                     std::cout << "[PIN OK] Disarmed\n";
                     sendDisarmNotification();
-                    executeAudioAsync("/home/pi/Embedded-Multimedia/sounds/welcome_traveler.wav");
+                    executeAudioAsync("/home/pi/Embedded-Multimedia/welcome_traveler.wav");
                 } else {
                     current_state_ = State::ALARM;
                     std::cout << "ALARM!\n";
                     sendAlarmNotification();
                     sendVideoFile();
-                    executeAudioAsync("/home/pi/Embedded-Multimedia/sounds/alarm.wav");
+                    executeAudioAsync("/home/pi/Embedded-Multimedia/alarm.wav");
                 }
             } else if (ev.sensor_id == "window" || ev.sensor_id == "motion") {
                 recordClipAsync(10s);
                 current_state_ = State::ALARM;
                 std::cout << "ALARM!\n";
                 sendAlarmNotification();
-                executeAudioAsync("/home/pi/Embedded-Multimedia/sounds/alarm.wav");
+                executeAudioAsync("/home/pi/Embedded-Multimedia/alarm.wav");
             }
             return;
         }
