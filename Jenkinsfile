@@ -145,7 +145,8 @@ pipeline {
 
                         sonar-scanner \
                         -Dsonar.cfamily.compile-commands=bw-output/compile_commands.json \
-                        -Dsonar.token=$SONAR_TOKEN
+                        -Dsonar.token=$SONAR_TOKEN \
+                        -Dsonar.go.coverage.reportPaths=go-telegram-coverage.out
                     '''
                 }
             }
