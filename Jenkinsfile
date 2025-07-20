@@ -93,6 +93,7 @@ pipeline {
                     export PATH=$HOME/workspace/.sonar/build-wrapper-linux-aarch64:$PATH
                     cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .
                     build-wrapper-linux-aarch64 --out-dir bw-output make -j$(nproc)
+                    ctest --output-on-failure
                 '''
             }
         }

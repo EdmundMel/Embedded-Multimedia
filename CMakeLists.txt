@@ -16,6 +16,17 @@ FetchContent_MakeAvailable(cpp_httplib)
 find_package(PostgreSQL REQUIRED)
 find_package(Threads REQUIRED)
 
+find_package(GTest REQUIRED)
+find_package(GMock REQUIRED)
+enable_testing()
+add_executable(db_access_test
+  test/db_access_test.cpp
+)
+target_link_libraries(db_access_test
+  PRIVATE GTest::gtest_main GMock::gmock_main
+)
+add_test(NAME DBAccessTest COMMAND db_access_test)
+
 # --- Main executable ---
 add_executable(home-alarm-core
     src/main.cpp

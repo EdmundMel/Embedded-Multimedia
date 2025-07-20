@@ -1,13 +1,13 @@
 # DB Specification
 
-This document outlines the architecture and deployment pipeline of a time-series sensor event system using **PostgreSQL**, **C++**, **Jenkins**, and **Grafana**.
+This document outlines the architecture and deployment pipeline of a time-series sensor event system using **PostgreSQL**, **C++** and **Grafana**.
 
 ---
 
 ## 1. System Overview
 
 ```text
-┌───────────────┐       TCP (JSON)       ┌────────────────────┐              ┌─────────────┐
+┌───────────────┐                        ┌────────────────────┐              ┌─────────────┐
 │ Data Client   │ ─────────────────────▶ │ C++ Program        │              │ Grafana     │
 │ (Sensor, etc) │                        │ (home-alarm-core)  │              │ (PostgreSQL │
 │               │                        │                    │              │  Plugin)    │
@@ -38,17 +38,17 @@ const char* conninfo = "host=localhost port=5432 dbname=sensordb user=dbuser pas
 
 ```sql
 CREATE TABLE IF NOT EXISTS sensor_events (
-    id          SERIAL PRIMARY KEY,
-    sensor_id   TEXT NOT NULL,
-    type        TEXT NOT NULL,
-    timestamp   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    id            SERIAL PRIMARY KEY,
+    sensor_id     TEXT    NOT NULL,
+    value         TEXT,
+    timestamp     TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 ```
 
 ### 2.3 Sample Query (C++)
 
 ```sql
-SELECT sensor_id, type, timestamp
+SELECT sensor_id, value, timestamp
 FROM sensor_events
 ORDER BY timestamp DESC
 LIMIT 10;
@@ -56,51 +56,20 @@ LIMIT 10;
 
 ---
 
-## 3. Grafana Integration
-
-- **Data Source**: PostgreSQL Plugin
-
-- **Host**: `localhost`, Port: `5432`
-
-- **Database**: `sensordb`
-
-- **User**: `dbuser`, Password: `secret`
-
-- **Panel Query**:
-
-  ```sql
-  SELECT
-    timestamp AS "time",
-    value_column AS "value"
-  FROM
-    sensor_events
-  WHERE
-    $__timeFilter(timestamp)
-  ```
-
-- **Visualization**:
-
-  - X-axis: `timestamp`
-  - Y-axis: measurement (e.g., temperature)
-
----
-
-## 4. SQL Init Script (`init.sql`)
+## 3. SQL Init Script (`init.sql`)
 
 ```sql
+-- init.sql
+-- 1. Create the sensor_events table
 CREATE TABLE IF NOT EXISTS sensor_events (
-    id SERIAL PRIMARY KEY,
-    sensor_id TEXT NOT NULL,
-    type TEXT NOT NULL,
-    timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    id            SERIAL PRIMARY KEY,
+    sensor_id     TEXT    NOT NULL,
+    value         TEXT,
+    timestamp     TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- 2. Index to speed up ORDER BY timestamp DESC
 CREATE INDEX IF NOT EXISTS idx_sensor_events_timestamp
     ON sensor_events (timestamp DESC);
 
--- Sample data
-INSERT INTO sensor_events (sensor_id, type, timestamp) VALUES
-  ('sensor-1', 'motion', NOW() - INTERVAL '5 minutes'),
-  ('sensor-2', 'temperature', NOW() - INTERVAL '3 minutes'),
-  ('sensor-3', 'door', NOW() - INTERVAL '1 minute');
 ```
