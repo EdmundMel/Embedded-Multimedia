@@ -49,6 +49,8 @@ add_executable(home-alarm-core
     src/db_access.cpp
 )
 
+add_test(NAME DBAccessTest COMMAND db_access_test)
+
 target_link_libraries(home-alarm-core
     PRIVATE
       PostgreSQL::PostgreSQL
