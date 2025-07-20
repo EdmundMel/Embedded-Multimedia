@@ -15,7 +15,7 @@ sudo apt install -y libgpiod-dev python3-venv python3-pip curl git libpq-dev git
 # sudo usermod -aG docker "$USER"
 
 # --- Install latest Go ---
-GO_VERSION=$(curl -s https://go.dev/VERSION?m=text)
+GO_VERSION=$(curl -s "https://go.dev/VERSION?m=text")
 GO_TAR="$GO_VERSION.linux-amd64.tar.gz"
 curl -LO "https://go.dev/dl/${GO_TAR}"
 sudo rm -rf /usr/local/go
