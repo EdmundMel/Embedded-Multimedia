@@ -25,7 +25,6 @@ echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.profile
 export PATH=$PATH:/usr/local/go/bin
 
 # --- Install httplib.h (cpp-httplib) ---
-# Single-file, header-only HTTP/HTTPS C++ library by Yuji Hirose (MIT) :contentReference[oaicite:1]{index=1}
 HTTPLIB_VERSION="0.23.1"
 mkdir -p include/cpp-httplib
 curl -L "https://raw.githubusercontent.com/yhirose/cpp-httplib/v${HTTPLIB_VERSION}/httplib.h" \
