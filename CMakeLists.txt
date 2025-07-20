@@ -25,9 +25,7 @@ find_package(Threads REQUIRED)
 
 # C++ unit tests
 add_executable(db_access_test src/db_access_test.cpp)
-target_link_libraries(db_access_test
-  PRIVATE GTest::gtest_main GTest::gtest GTest::gmock
-)
+target_link_libraries(db_access_test PRIVATE db_access pq)  # pq for libpq
 enable_testing()
 add_test(NAME DBAccessTest COMMAND db_access_test)
 
