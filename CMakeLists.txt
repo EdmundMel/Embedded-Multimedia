@@ -27,6 +27,5 @@ add_executable(home-alarm-core
 target_link_libraries(home-alarm-core
     PRIVATE
       PostgreSQL::PostgreSQL
-      httplib
-      cpp-httplib
+      httplib::httplib
 )
