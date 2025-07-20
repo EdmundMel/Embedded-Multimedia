@@ -27,7 +27,7 @@ pipeline {
                       | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
 
                     sudo apt-get update
-                    sudo apt-get install -y kitware-archive-keyring cmake
+                    sudo apt-get install -y kitware-archive-keyring cmake lcov
                     cmake --version
                 '''
             }
@@ -91,6 +91,13 @@ pipeline {
                     cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .
                     build-wrapper-linux-aarch64 --out-dir bw-output make -j$(nproc)
                     ctest --output-on-failure
+                    
+                    # Generate coverage report for C++ tests
+                    ./db_access_test
+                    gcov src/db_access.cpp
+                    lcov --capture --directory . --output-file cpp_coverage.info
+                    lcov --remove cpp_coverage.info '/usr/*' --output-file cpp_coverage.info
+                    lcov --remove cpp_coverage.info '*/_deps/*' --output-file cpp_coverage.info
                 '''
             }
         }
@@ -143,6 +150,8 @@ pipeline {
 
                         sonar-scanner \
                         -Dsonar.cfamily.compile-commands=bw-output/compile_commands.json \
+                        -Dsonar.cfamily.llvm-cov.reportPath=cpp_coverage.info \
+                        -Dsonar.go.coverage.reportPaths=home_alarm_bot_coverage.out \
                         -Dsonar.token=$SONAR_TOKEN
                     '''
                 }

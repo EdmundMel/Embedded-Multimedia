@@ -39,6 +39,12 @@ target_link_libraries(db_access_test PRIVATE
     gtest_main
 )
 
+# Add coverage flags for the test executable and library
+target_compile_options(db_access_test PRIVATE --coverage)
+target_link_options(db_access_test PRIVATE --coverage)
+target_compile_options(db_access PRIVATE --coverage)
+target_link_options(db_access PRIVATE --coverage)
+
 # Enable testing
 enable_testing()
 
