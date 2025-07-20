@@ -93,11 +93,30 @@ pipeline {
                     ctest --output-on-failure
                     
                     # Generate coverage report for C++ tests
+                    # Run the test again to generate .gcda files
                     ./db_access_test
-                    gcov src/db_access.cpp
-                    lcov --capture --directory . --output-file cpp_coverage.info
-                    lcov --remove cpp_coverage.info '/usr/*' --output-file cpp_coverage.info
-                    lcov --remove cpp_coverage.info '*/_deps/*' --output-file cpp_coverage.info
+                    
+                    # Find and process all .gcno and .gcda files
+                    find . -name "*.gcno" -o -name "*.gcda" | head -10
+                    
+                    # Generate coverage info using the CMake build directory structure
+                    lcov --capture --directory CMakeFiles/db_access.dir/src --output-file cpp_coverage.info --gcov-tool gcov
+                    lcov --capture --directory CMakeFiles/db_access_test.dir/src --output-file cpp_coverage_test.info --gcov-tool gcov
+                    
+                    # Combine coverage files if both exist
+                    if [ -f cpp_coverage.info ] && [ -f cpp_coverage_test.info ]; then
+                        lcov --add-tracefile cpp_coverage.info --add-tracefile cpp_coverage_test.info --output-file combined_coverage.info
+                        mv combined_coverage.info cpp_coverage.info
+                    elif [ -f cpp_coverage_test.info ]; then
+                        mv cpp_coverage_test.info cpp_coverage.info
+                    fi
+                    
+                    # Clean up the coverage file
+                    if [ -f cpp_coverage.info ]; then
+                        lcov --remove cpp_coverage.info '/usr/*' --output-file cpp_coverage.info
+                        lcov --remove cpp_coverage.info '*/_deps/*' --output-file cpp_coverage.info
+                        lcov --list cpp_coverage.info
+                    fi
                 '''
             }
         }
