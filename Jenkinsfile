@@ -123,8 +123,10 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                    go test ./telegram_bot/... -coverprofile=coverage.out -covermode=set
-                    cp coverage.out ./go-telegram-coverage.out
+                cd telegram_bot
+                go test ./... -coverprofile=coverage.out -covermode=set
+                cp coverage.out ../telegram_bot_coverage.out
+                cd ..
                 '''
             }
         }
@@ -143,8 +145,7 @@ pipeline {
 
                         sonar-scanner \
                         -Dsonar.cfamily.compile-commands=bw-output/compile_commands.json \
-                        -Dsonar.token=$SONAR_TOKEN \
-                        -Dsonar.go.coverage.reportPaths=go-telegram-coverage.out
+                        -Dsonar.token=$SONAR_TOKEN
                     '''
                 }
             }
