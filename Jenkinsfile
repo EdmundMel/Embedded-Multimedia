@@ -34,9 +34,6 @@ pipeline {
         }
 
         stage('Start PostgreSQL') {
-            when {
-                expression { return params.START_HOME_ALARM_CORE }
-            }
             steps {
                 sh '''
                     cd database
