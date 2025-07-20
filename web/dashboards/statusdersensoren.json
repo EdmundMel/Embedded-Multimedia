@@ -110,7 +110,7 @@
           "editorMode": "code",
           "format": "time_series",
           "rawQuery": true,
-          "rawSql": "SELECT\n  timestamp AS \"time\",\n  value::integer AS value,\n  sensor_id AS \"__name__\"\nFROM sensor_events\nWHERE $__timeFilter(timestamp)\nORDER BY timestamp ASC\n",
+          "rawSql": "SELECT\n  timestamp AS \"time\",\n  value::integer AS value,\n  sensor_id AS \"__name__\"\nFROM sensor_events\nORDER BY timestamp ASC\n",
           "refId": "A",
           "sql": {
             "columns": [
