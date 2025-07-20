@@ -39,8 +39,11 @@ target_link_libraries(db_access_test PRIVATE
     gtest_main
 )
 
-include(GoogleTest)
-gtest_discover_tests(db_access_test)
+# Enable testing
+enable_testing()
+
+# Add the test
+add_test(NAME db_access_tests COMMAND db_access_test)
 
 # Main executable
 add_executable(home-alarm-core
