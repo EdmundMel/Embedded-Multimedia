@@ -8,17 +8,9 @@ include(FetchContent)
 FetchContent_Declare(
   cpp_httplib
   GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git
-  GIT_TAG        v0.23.1  # lock to a specific version
-  SOURCE_SUBDIR  ""       # no subdir; top-level has httplib.h
+  GIT_TAG        v0.23.1
 )
 FetchContent_MakeAvailable(cpp_httplib)
-
-# Define interface target
-add_library(httplib INTERFACE)
-target_include_directories(httplib
-  INTERFACE
-    ${cpp_httplib_SOURCE_DIR}
-)
 
 # PostgreSQL
 find_package(PostgreSQL REQUIRED)
