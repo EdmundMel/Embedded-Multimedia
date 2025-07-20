@@ -123,10 +123,8 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                    cd telegram_bot
-                    go test ./... -coverprofile=coverage.out -covermode=set
-                    cp coverage.out ../go-telegram-coverage.out
-                    cd ..
+                    go test ./telegram_bot/... -coverprofile=coverage.out -covermode=set
+                    cp coverage.out ./go-telegram-coverage.out
                 '''
             }
         }
