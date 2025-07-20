@@ -12,7 +12,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cpp_httplib)
 
-include(FetchContent)
 FetchContent_Declare(
   googletest
   GIT_REPOSITORY https://github.com/google/googletest.git
@@ -20,26 +19,23 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-add_executable(db_access_test test/db_access_test.cpp)
-target_link_libraries(db_access_test
-  PRIVATE GTest::gtest_main GTest::gmock_main
-)
-
-# PostgreSQL
+# PostgreSQL & Threads
 find_package(PostgreSQL REQUIRED)
 find_package(Threads REQUIRED)
 
-find_package(GTest REQUIRED)
-find_package(GMock REQUIRED)
+# C++ unit tests
+add_executable(db_access_test test/db_access_test.cpp)
+target_link_libraries(db_access_test
+  PRIVATE GTest::gtest_main GTest::gtest GTest::gmock
+)
 enable_testing()
 add_test(NAME DBAccessTest COMMAND db_access_test)
 
-# --- Main executable ---
+# Main executable
 add_executable(home-alarm-core
     src/main.cpp
     src/alarm_system.cpp
     src/db_access.cpp
-
 )
 
 target_link_libraries(home-alarm-core
