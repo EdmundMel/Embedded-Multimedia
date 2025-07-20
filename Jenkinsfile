@@ -27,7 +27,7 @@ pipeline {
                       | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
 
                     sudo apt-get update
-                    sudo apt-get install -y kitware-archive-keyring cmake lcov
+                    sudo apt-get install -y kitware-archive-keyring cmake
                     cmake --version
                 '''
             }
@@ -91,32 +91,7 @@ pipeline {
                     cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .
                     build-wrapper-linux-aarch64 --out-dir bw-output make -j$(nproc)
                     ctest --output-on-failure
-                    
-                    # Generate coverage report for C++ tests
-                    # Run the test again to generate .gcda files
                     ./db_access_test
-                    
-                    # Find and process all .gcno and .gcda files
-                    find . -name "*.gcno" -o -name "*.gcda" | head -10
-                    
-                    # Generate coverage info using the CMake build directory structure
-                    lcov --capture --directory CMakeFiles/db_access.dir/src --output-file cpp_coverage.info --gcov-tool gcov
-                    lcov --capture --directory CMakeFiles/db_access_test.dir/src --output-file cpp_coverage_test.info --gcov-tool gcov
-                    
-                    # Combine coverage files if both exist
-                    if [ -f cpp_coverage.info ] && [ -f cpp_coverage_test.info ]; then
-                        lcov --add-tracefile cpp_coverage.info --add-tracefile cpp_coverage_test.info --output-file combined_coverage.info
-                        mv combined_coverage.info cpp_coverage.info
-                    elif [ -f cpp_coverage_test.info ]; then
-                        mv cpp_coverage_test.info cpp_coverage.info
-                    fi
-                    
-                    # Clean up the coverage file
-                    if [ -f cpp_coverage.info ]; then
-                        lcov --remove cpp_coverage.info '/usr/*' --output-file cpp_coverage.info
-                        lcov --remove cpp_coverage.info '*/_deps/*' --output-file cpp_coverage.info
-                        lcov --list cpp_coverage.info
-                    fi
                 '''
             }
         }
@@ -169,7 +144,7 @@ pipeline {
 
                         sonar-scanner \
                         -Dsonar.cfamily.compile-commands=bw-output/compile_commands.json \
-                        -Dsonar.cfamily.llvm-cov.reportPath=cpp_coverage.info \
+                        -Dsonar.cfamily.gcov.reportsPath=. \
                         -Dsonar.go.coverage.reportPaths=home_alarm_bot_coverage.out \
                         -Dsonar.token=$SONAR_TOKEN
                     '''
