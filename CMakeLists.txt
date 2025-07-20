@@ -24,7 +24,7 @@ find_package(PostgreSQL REQUIRED)
 find_package(Threads REQUIRED)
 
 # C++ unit tests
-add_executable(db_access_test test/db_access_test.cpp)
+add_executable(db_access_test src/db_access_test.cpp)
 target_link_libraries(db_access_test
   PRIVATE GTest::gtest_main GTest::gtest GTest::gmock
 )
