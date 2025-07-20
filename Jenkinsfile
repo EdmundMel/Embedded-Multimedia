@@ -17,9 +17,7 @@ pipeline {
             }
             steps {
                 sh '''
-                    sudo apt-get update
-                    sudo apt-get install -y libpq-dev git software-properties-common lsb-release docker.io
-
+                    sudo sh ./install_requirements.sh
                     test -f /usr/share/doc/kitware-archive-keyring/copyright || \
                     wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null \
                       | gpg --dearmor \
