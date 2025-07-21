@@ -29,7 +29,7 @@ private:
     QString pythonPath;
     QString scriptPath;
     QTimer* timeoutTimer;
-    const int timeout = 10000;
+    const int timeout = 30000; // timout for pincode input in ms
 };
 
 

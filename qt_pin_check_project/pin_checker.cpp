@@ -23,13 +23,13 @@ PinChecker::PinChecker(QObject* parent)
 
     QProcess::execute(pythonPath, QStringList() << scriptPath << "----");
 
+    // setup timer and check if timeout is reached
     timeoutTimer->setSingleShot(true);
-    timeoutTimer->setInterval(timeout); // e.g., 60000 ms
+    timeoutTimer->setInterval(timeout);
     connect(timeoutTimer, &QTimer::timeout, this, [this]() {
         emit finished(13);
     });
     timeoutTimer->start();
-
 
     if (serial->open(QIODevice::ReadOnly)) {
         connect(serial, &QSerialPort::readyRead, this, &PinChecker::handleKeypad);
@@ -89,7 +89,7 @@ void PinChecker::handleKeypad() {
                 break;
         }
 
-        QProcess::execute(pythonPath, QStringList() << scriptPath << currentInput);
+        QProcess::execute(pythonPath, QStringList() << scriptPath << currentInput); // show input on display
         if (currentInput.size() == 4) {
             checkPin();
             currentInput.clear();

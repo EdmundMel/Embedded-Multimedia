@@ -1,19 +1,13 @@
 import time
 import lgpio
-
-# Segment byte maps for characters and digits
-SEGMENTS = {
-    ' ': 0x00, '-': 0x40, '0': 0x3F, '1': 0x06, '2': 0x5B, '3': 0x4F,
-    '4': 0x66, '5': 0x6D, '6': 0x7D, '7': 0x07, '8': 0x7F, '9': 0x6F,
-    'A': 0x77, 'b': 0x7C, 'C': 0x39, 'd': 0x5E, 'E': 0x79, 'F': 0x71,
-    'o': 0x5C, 'k': 0x75, 'r': 0x50
-}
+"""
+Shorter and adapted for lgpio version of tm1637.py.
+Uses only parts to display 4 characters.
+"""
 
 _SEGMENTS = bytearray(
     b'\x3F\x06\x5B\x4F\x66\x6D\x7D\x07\x7F\x6F\x77\x7C\x39\x5E\x79\x71\x3D\x76\x06\x1E\x76\x38\x55\x54\x3F\x73\x67'
     b'\x50\x6D\x78\x3E\x1C\x2A\x76\x6E\x5B\x00\x40\x63')
-
-
 
 class TM1637:
     def __init__(self, clk, dio, brightness=7):
@@ -53,16 +47,13 @@ class TM1637:
             time.sleep(0.00001)
             lgpio.gpio_write(self.handle, self.clk, 0)
             time.sleep(0.00001)
-        # Skip ACK
+
         lgpio.gpio_write(self.handle, self.clk, 0)
         time.sleep(0.00001)
         lgpio.gpio_write(self.handle, self.clk, 1)
         time.sleep(0.00001)
         lgpio.gpio_write(self.handle, self.clk, 0)
 
-    def _encode(self, char):
-        return SEGMENTS.get(char.upper(), 0x00)
-	
     def _encode_char(self, char):
         """Convert a character 0-9, a-z, space, dash or star to a segment."""
         o = ord(char)

@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
     sensors.append(new GPIOSensor("door", 16)); // watch out: pin must be pull up: pinctrl set 16 ip pu
 
     // controls for checking if the sensor has triggered
+    // done in bursts to catch short activations
     const int samplesBurst = 10;
     const int delayBurst = 100;
     int iDetected;
