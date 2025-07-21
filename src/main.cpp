@@ -20,7 +20,7 @@ int main() {
     AlarmSystem system;
     system.start();
 
-    // ---------------- HTTP server (port 8081) ------------------
+    // HTTP server (port 8081)
     httplib::Server api;
 
     api.Get("/arm", [&](const httplib::Request&, httplib::Response& res) {
@@ -59,7 +59,6 @@ int main() {
         api.listen("127.0.0.1", 8081);
     });
 
-    // ---------------- simple CLI (optional) --------------------
     std::cout << "Commands: arm | disarm | quit\n> ";
     for (std::string cmd; std::cin >> cmd;) {
         if (cmd == "arm")        system.arm();

@@ -1,13 +1,13 @@
 #include "alarm_system.h"
-#include "db_access.h"      // <--- keep your existing DB layer *unchanged*
+#include "db_access.h"   
 
 #define CPPHTTPLIB_FORM_DATA
-#include "httplib.h"        // cpp-httplib single‑header library
+#include "httplib.h"     
 
 #include <iostream>
 #include <chrono>
-#include <cstdlib>     // std::system
-#include <sys/wait.h>  // WEXITSTATUS, WIFEXITED
+#include <cstdlib> 
+#include <sys/wait.h>
 #include <thread>
 #include <signal.h>
 #include <sys/types.h>
@@ -37,11 +37,11 @@ namespace
     void sendVideoFile(); 
     constexpr char kVideoPath[] = "/home/pi/Embedded-Multimedia/alarm.mp4";
 
-    // ---------- continuous recording ----------
+    // continuous recording
     pid_t startContinuousRecording()
     {
         pid_t pid = fork();
-        if (pid == 0) {               // child → becomes ffmpeg
+        if (pid == 0) {
             execlp("ffmpeg",
                    "ffmpeg",
                    "-loglevel", "error",
@@ -51,20 +51,20 @@ namespace
                    "-preset",   "ultrafast",
                    "-y",        kVideoPath,
                    nullptr);
-            _exit(127);               // only if exec failed
+            _exit(127);// only if exec failed
         }
-        return pid;                   // parent keeps the PID
+        return pid;/ parent keeps the PID
     }
 
     void stopRecording(pid_t pid)
     {
         if (pid <= 0) return;
-        kill(pid, SIGINT);            // polite ⌃C → lets ffmpeg flush & close
+        kill(pid, SIGINT);            
         int status = 0;
-        waitpid(pid, &status, 0);     // reap the zombie
+        waitpid(pid, &status, 0); 
     }
 
-    // ---------- short clip ----------
+    // short clip
     void recordClipAsync(std::chrono::seconds dur)
     {
         std::thread([dur] {
@@ -90,7 +90,7 @@ namespace {
         std::vector<char> data((std::istreambuf_iterator<char>(file)),
                             std::istreambuf_iterator<char>());
 
-        // ---- build minimal multipart body ----
+        // build minimal multipart body
         const std::string boundary = "----alarm-" + std::to_string(std::time(nullptr));
 
         std::ostringstream body;
@@ -111,7 +111,7 @@ namespace {
     }
 }
 
-// -------- public API --------
+// public API
 void AlarmSystem::arm() {
     std::lock_guard<std::mutex> lk(state_mtx_);
     current_state_ = State::ARMED;
@@ -130,7 +130,7 @@ AlarmSystem::State AlarmSystem::getState() {
 }
 
 void AlarmSystem::start() {
-    if (running_) return;              // already running
+    if (running_) return;
     running_ = true;
     worker_  = std::thread(&AlarmSystem::pollLoop, this);
 }
@@ -140,7 +140,7 @@ void AlarmSystem::stop() {
     if (worker_.joinable()) worker_.join();
 }
 
-// -------- internal helpers --------
+// internal helpers
 void AlarmSystem::pollLoop() {
     while (running_) {
         try {
@@ -203,7 +203,6 @@ void AlarmSystem::handleEvent(const SensorEvent &ev) {
         }
 
         case State::CHECK:
-            // Should never stay here; handled immediately after door trigger
             return;
 
         case State::ALARM:
@@ -222,7 +221,7 @@ bool AlarmSystem::runPinCheck() {
 
     if (WIFEXITED(status)) {
         int code = WEXITSTATUS(status);
-        return code == 12;           // 12 = success, anything else triggers ALARM
+        return code == 12; // 12 = success, anything else triggers ALARM
     }
 
     return false; // Abnormal termination counts as failure

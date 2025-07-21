@@ -40,10 +40,3 @@ TEST_F(DatabaseTest, GetRecentSensorEventsHasValidTimestamps) {
         EXPECT_GT(t, 946684800); // 2000-01-01 00:00:00 UTC
     }
 }
-
-TEST_F(DatabaseTest, ThrowsOnInvalidConnection) {
-    // This test cannot easily be done without code change
-    // because the connection string is hardcoded inside the method
-    // One would have to mock PQconnectdb to simulate failure
-    // So we skip this here.
-}
