@@ -40,22 +40,19 @@ auto Database::getRecentSensorEvents() -> std::vector<SensorEvent> {
     int n = PQntuples(res);
     for (int i = 0; i < n; ++i) {
         // Extract columns
-        std::string sensor_id    = PQgetvalue(res, i, 0);
-        std::string value        = PQgetvalue(res, i, 1);
+        std::string sensor_id = PQgetvalue(res, i, 0);
+        std::string value = PQgetvalue(res, i, 1);
         std::string timestampStr = PQgetvalue(res, i, 2);
 
         // Parse ISO‑style timestamp into a time_point
         std::tm tm = {};
         std::istringstream ss(timestampStr);
         ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
-        if (ss.fail()) {
-            // handle parse error if needed
-        }
         auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
 
         events.push_back(SensorEvent{
             .sensor_id = std::move(sensor_id),
-            .value     = std::move(value),
+            .value = std::move(value),
             .timestamp = tp
         });
     }

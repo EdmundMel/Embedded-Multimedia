@@ -4,8 +4,8 @@
 #include <chrono>
 
 struct SensorEvent {
-    std::string sensor_id;                         // e.g. "door", "window", "motion"
-    std::string value;                             // raw value from DB, compare to "1"
+    std::string sensor_id; 
+    std::string value;
     std::chrono::system_clock::time_point timestamp;
 };
 

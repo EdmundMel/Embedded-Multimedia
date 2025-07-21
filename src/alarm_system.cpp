@@ -45,15 +45,15 @@ namespace
             execlp("ffmpeg",
                    "ffmpeg",
                    "-loglevel", "error",
-                   "-f",        "v4l2",
-                   "-i",        "/dev/video0",
-                   "-vcodec",   "libx264",
-                   "-preset",   "ultrafast",
-                   "-y",        kVideoPath,
+                   "-f", "v4l2",
+                   "-i", "/dev/video0",
+                   "-vcodec", "libx264",
+                   "-preset", "ultrafast",
+                   "-y", kVideoPath,
                    nullptr);
             _exit(127);// only if exec failed
         }
-        return pid;/ parent keeps the PID
+        return pid;
     }
 
     void stopRecording(pid_t pid)
