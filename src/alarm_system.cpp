@@ -6,7 +6,6 @@
 
 #include <iostream>
 #include <chrono>
-#include <thread>
 #include <cstdlib>     // std::system
 #include <sys/wait.h>  // WEXITSTATUS, WIFEXITED
 #include <thread>
