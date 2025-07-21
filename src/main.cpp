@@ -1,5 +1,5 @@
 #include "alarm_system.h"
-#include "httplib.h"  // HTTP server
+#include "httplib.h"
 
 #include <iostream>
 #include <fstream>

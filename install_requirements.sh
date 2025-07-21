@@ -10,7 +10,7 @@ sudo apt install -y libgpiod-dev python3-venv python3-pip curl git libpq-dev git
 # --- Install Docker ---
 sudo apt remove -y docker docker-engine docker.io containerd runc || true
 curl -fsSL https://get.docker.com -o get-docker.sh
-sh get-docker.sh
+sudo sh get-docker.sh
 rm get-docker.sh
 sudo usermod -aG docker "$USER"
 
